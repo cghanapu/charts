@@ -20,6 +20,6 @@ entries:
       name: rainest
     name: kong
     urls:
-    - https://cghanapu.github.io/charts/kong-2.7.0.tgz
+    - https://cghanapu.github.io/charts/charts/kong-2.7.0.tgz
     version: 2.7.0
 generated: "2022-02-23T19:25:52.557162-06:00"
