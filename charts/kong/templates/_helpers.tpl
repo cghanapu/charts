@@ -392,9 +392,11 @@ The name of the service used for the ingress controller's validation webhook
 
 {{- define "kong.volumes" -}}
 - name: {{ template "kong.fullname" . }}-prefix-dir
-  emptyDir: {}
+  emptyDir:
+    sizeLimit: {{ .Values.deployment.prefixDir.sizeLimit }}
 - name: {{ template "kong.fullname" . }}-tmp
-  emptyDir: {}
+  emptyDir:
+    sizeLimit: {{ .Values.deployment.tmpDir.sizeLimit }}
 {{- if (and (.Values.postgresql.enabled) .Values.waitImage.enabled) }}
 - name: {{ template "kong.fullname" . }}-bash-wait-for-postgres
   configMap:
@@ -437,7 +439,7 @@ The name of the service used for the ingress controller's validation webhook
     secretName: {{ .Values.ingressController.admissionWebhook.certificate.secretName }}
     {{- else }}
     secretName: {{ template "kong.fullname" . }}-validation-webhook-keypair
-    {{- end }}  
+    {{- end }}
 {{- end }}
 {{- range $secretVolume := .Values.secretVolumes }}
 - name: {{ . }}
@@ -533,7 +535,7 @@ The name of the service used for the ingress controller's validation webhook
   image: {{ include "kong.getRepoTag" .Values.image }}
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   securityContext:
-  {{ toYaml .Values.containerSecurityContext | nindent 4 }} 
+  {{ toYaml .Values.containerSecurityContext | nindent 4 }}
   env:
   {{- include "kong.env" . | nindent 2 }}
 {{/* TODO the prefix override is to work around https://github.com/Kong/charts/issues/295
@@ -558,7 +560,7 @@ The name of the service used for the ingress controller's validation webhook
 {{- define "kong.controller-container" -}}
 - name: ingress-controller
   securityContext:
-{{ toYaml .Values.containerSecurityContext | nindent 4 }}  
+{{ toYaml .Values.containerSecurityContext | nindent 4 }}
   args:
   {{ if .Values.ingressController.args}}
   {{- range $val := .Values.ingressController.args }}
